@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>พิมพ์ป้าย QR Code ประจำบูท NT Digital Stamp Rally</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Fonts Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background-color: white !important;
+        padding: 0 !important;
+      }
+      .page-break {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+
+  <!-- Control Header (ซ่อนเวลาสั่งพิมพ์) -->
+  <div class="max-w-5xl mx-auto mb-8 bg-white p-6 rounded-3xl shadow-sm border border-slate-200 no-print flex flex-col md:flex-row items-center justify-between gap-4">
+    <div>
+      <span class="text-xs font-semibold px-2.5 py-1 bg-sky-100 text-sky-800 rounded-full">QR Code Generator</span>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800 mt-2">ป้าย QR Code ประจำบูท NT ทั้ง 10 บูท</h1>
+      <p class="text-xs md:text-sm text-slate-500 font-light mt-1">ใช้ URL เดิม พร้อมแสดงโลโก้ประจำบูทและจัดหน้าสำหรับพิมพ์ตั้งโต๊ะ (Tent Card)</p>
+    </div>
+    <div class="flex items-center gap-3 w-full md:w-auto">
+      <button onclick="window.print()" class="flex-1 md:flex-none px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white font-medium text-sm rounded-2xl shadow-md flex items-center justify-center gap-2">
+        <i class="fa-solid fa-print"></i> พิมพ์ป้ายทั้งหมด (Print / PDF)
+      </button>
+    </div>
+  </div>
+
+  <!-- QR Cards Grid Container -->
+  <div id="cards-container" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Rendered via JavaScript -->
+  </div>
+
+  <script>
+    const BASE_URL = "https://hamster14596.github.io/event-stamp/";
+
+    const BOOTHS = [
+      { id: 1, code: "B1", name: "NT CLOUD + NT BIG DATA", logo: "1_0.png", item: "Cloud & Big Data Solution" },
+      { id: 2, code: "B2", name: "NT Cyfence", logo: "2_0.png", item: "อุปกรณ์ Fortigate" },
+      { id: 3, code: "B3", name: "NT Satellite", logo: "3_0.png", item: "อุปกรณ์ OneWeb" },
+      { id: 4, code: "B4", name: "NT DTRS", logo: "4_0.png", item: "อุปกรณ์วิทยุ DTRS" },
+      { id: 5, code: "B5", name: "NT Network Solution", logo: "5_0.png", item: "SD-WAN, Corporate, DDoS" },
+      { id: 6, code: "B6", name: "NT 5G Private Network", logo: "6_0.png", item: "5G / CPE / Network" },
+      { id: 7, code: "B7", name: "Energy & Sustainability", logo: "7_0.png", item: "Solar Rooftop + Storage" },
+      { id: 8, code: "B8", name: "Soft ระบบบริหารโรงงาน", logo: "8_0.png", item: "Software / Dashboard" },
+      { id: 9, code: "B9", name: "ICT Solution", logo: "9_0.png", item: "LAN, Wi-Fi, Router, Rack" },
+      { id: 10, code: "B10", name: "CCTV - AI", logo: "10_0.png", item: "กล้อง CCTV, NVR, AI Software" }
+    ];
+
+    function renderCards() {
+      const container = document.getElementById("cards-container");
+      container.innerHTML = "";
+
+      BOOTHS.forEach((b) => {
+        const targetUrl = `${BASE_URL}?booth=${b.id}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(targetUrl)}`;
+
+        const card = document.createElement("div");
+        card.className = "page-break bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm flex flex-col items-center justify-between text-center relative overflow-hidden";
+
+        card.innerHTML = `
+          <!-- Header Card (แสดงเฉพาะรหัสบูท จัดกึ่งกลางด้านบน) -->
+          <div class="w-full flex items-center justify-center pb-3 border-b border-slate-100 mb-4">
+            <span class="px-3.5 py-1 bg-sky-50 text-sky-700 border border-sky-200 font-bold text-xs rounded-xl tracking-wider">
+              ${b.code}
+            </span>
+          </div>
+
+          <!-- Booth Official Logo -->
+          <div class="w-20 h-20 mb-2 flex items-center justify-center p-1 bg-slate-50 rounded-2xl border border-slate-100">
+            <img src="${b.logo}" alt="${b.name}" class="w-full h-full object-contain" onerror="this.style.display='none'" />
+          </div>
+
+          <h2 class="text-base font-bold text-slate-800 leading-tight mb-0.5">${b.name}</h2>
+          <p class="text-xs text-slate-500 font-light mb-4">${b.item}</p>
+
+          <!-- QR Code Frame -->
+          <div class="p-3 bg-white border-2 border-dashed border-sky-300 rounded-2xl shadow-inner mb-4 flex items-center justify-center">
+            <img src="${qrUrl}" alt="QR Code ${b.name}" class="w-52 h-52 object-contain rounded-lg" />
+          </div>
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[11px] font-medium mb-4">
+            <i class="fa-solid fa-camera text-sky-600"></i> สแกนเพื่อเช็คอินสะสมแต้ม
+          </div>
+
+          <!-- Bottom Action Buttons (ซ่อนเวลาสั่งพิมพ์) -->
+          <div class="w-full pt-3 border-t border-slate-100 flex items-center justify-between gap-2 no-print">
+            <span class="text-[10px] text-slate-400 font-mono truncate max-w-[190px] text-left">${targetUrl}</span>
+            <a href="${qrUrl}" download="${b.code}_QRCode.png" target="_blank"
+              class="px-3 py-1.5 bg-slate-100 hover:bg-sky-50 text-slate-600 hover:text-sky-700 text-xs font-medium rounded-xl border border-slate-200 flex items-center gap-1">
+              <i class="fa-solid fa-download text-[11px]"></i> โหลดรูป QR
+            </a>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", renderCards);
+  </script>
+</body>
+</html>
